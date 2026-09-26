@@ -1,4 +1,4 @@
-# Day 4: PyTorch basics (tensors, dtype, device)
+# Day 4.1: PyTorch basics (tensors, dtype, device)
 
 Task: benchmark matmul across sizes and dtypes (fp32/fp16/bf16) and plot timings.
 

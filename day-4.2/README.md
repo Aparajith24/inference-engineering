@@ -1,4 +1,4 @@
-# Day 4.1: The day 3 MLP as a PyTorch nn.Module
+# Day 4.2: The day 3 MLP as a PyTorch nn.Module
 
 Follow-up to day 3 and day 4: rewrite the NumPy MLP with `torch.nn` and benchmark it
 across sizes and dtypes (fp32/fp16/bf16) on CPU and MPS.
@@ -114,7 +114,7 @@ class TwoLayerMLP(nn.Module):
 6. **CPU beats the GPU at small sizes**, and the GPU wins only when the work
    is big enough.
 
-Note: `day-4/matmul_bench.py` times a bare `a @ b` and sees CPU
+Note: `day-4.1/matmul_bench.py` times a bare `a @ b` and sees CPU
 fp16 at about 500x slower than fp32. Going through `nn.Linear` gave a much
 smaller gap (about 10x), because it calls a different PyTorch kernel. The
 same math can take different code paths, so benchmark the code you will

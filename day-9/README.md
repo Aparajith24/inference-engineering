@@ -121,7 +121,7 @@ same numbers into thinner slices:
 ## Connection to earlier and later days
 
 - Day 3: `nn.Linear` layers are the same `x @ W + b` as the MLP.
-- Day 4.1: `nn.Module`, `eval()` and `no_grad()`.
+- Day 4.2: `nn.Module`, `eval()` and `no_grad()`.
 - Day 8: each head runs exactly that formula.
 - Day 10: this module goes inside a transformer block, with real embeddings.
 - Day 13: each head's K and V are what the KV cache stores.

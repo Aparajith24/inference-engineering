@@ -158,16 +158,18 @@ if __name__ == "__main__":
     print("Check passed: SDPA == naive attention (fp32 on CPU, and on this device).")
 
     print(f"\nPART 1: naive attention vs SDPA (1 sequence, {HEADS} heads x {HEAD_DIM}, causal)\n")
-    print(f"{'T':>6}{'naive (ms)':>12}{'SDPA (ms)':>11}{'speedup':>9}   naive writes a (T,T) grid per head:")
+    print(f"{'T':>6}{'naive (ms)':>12}{'SDPA (ms)':>11}{'speedup':>9}"
+          f"   naive's scores tensor, all {HEADS} heads (x2 with weights):")
     part1 = []
     for T in SEQ_LENS:
         q, k, v = (torch.randn(1, HEADS, T, HEAD_DIM, device=device, dtype=dtype) for _ in range(3))
         t_naive = timed(lambda: naive_attention(q, k, v), device)
         t_sdpa = timed(lambda: sdpa_attention(q, k, v), device)
-        grid = HEADS * T * T * bpn  # one (T, T) matrix per head; naive keeps scores AND weights
+        per_head = T * T * bpn       # one (T, T) matrix
+        all_heads = HEADS * per_head  # the whole (1, HEADS, T, T) scores tensor for this sequence
         part1.append({"T": T, "naive": t_naive, "SDPA": t_sdpa})
         print(f"{T:>6}{t_naive * 1e3:>12.2f}{t_sdpa * 1e3:>11.2f}{t_naive / t_sdpa:>8.1f}x"
-              f"   {fmt_bytes(grid)} each, x2 (scores + weights)")
+              f"   {fmt_bytes(all_heads)} ({fmt_bytes(per_head)} per head)")
 
     # ---- Part 2 checks: our GQA step is correct ----
     S, B = 64, 2

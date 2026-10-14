@@ -59,7 +59,9 @@ def completions(request: CompletionRequest):
             f"prompt ({len(prompt_ids)} tokens) + max_tokens ({request.max_tokens}) is over "
             f"{MODEL_NAME}'s context length of {CONTEXT_LENGTH} tokens"))
     if not request.prompt.strip():
-        return completion_response(prompt_ids, tokenizer.encode(WELCOME_TEXT), "stop")
+        welcome_ids = tokenizer.encode(WELCOME_TEXT)
+        finish_reason = "stop" if len(welcome_ids) <= request.max_tokens else "length"
+        return completion_response(prompt_ids, welcome_ids[:request.max_tokens], finish_reason)
     answer_ids = generate(prompt_ids, request.max_tokens)
     finish_reason = "stop" if answer_ids[-1] == tokenizer.eos_token_id else "length"
     return completion_response(prompt_ids, answer_ids, finish_reason)

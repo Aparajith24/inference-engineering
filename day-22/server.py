@@ -110,10 +110,11 @@ def completion_object(request_id, created, text, finish, prompt_tokens, completi
 
 
 async def sse_events(prompt_ids, token_source):
-    """Send one SSE message per token with the running token count, then one with finish_reason, then [DONE]."""
+    """Send one SSE message per token, then one with finish_reason and the token usage, then [DONE]."""
     request_id, created, ids = f"cmpl-{uuid.uuid4().hex}", int(time.time()), []
     async for piece, ids in text_pieces(token_source):
         chunk = completion_object(request_id, created, piece, None, len(prompt_ids), len(ids))
+        chunk["usage"] = None
         yield f"data: {json.dumps(chunk)}\n\n"
     chunk = completion_object(request_id, created, "", finish_reason(ids), len(prompt_ids), len(ids))
     yield f"data: {json.dumps(chunk)}\n\n"

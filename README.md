@@ -2,7 +2,7 @@
 
 My path from knowing almost no Python or ML to understanding how large
 language models are served fast and cheaply. It follows a 45-day plan based on
-the book [learn-inference.com](https://learn-inference.com). Each day is a
+the book [Inference Engineering by Philip Kiely](https://www.baseten.co/inference-engineering/). Each day is a
 folder with working code and a README that explains what I built, what I
 learned and what the numbers showed.
 

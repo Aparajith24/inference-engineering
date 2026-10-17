@@ -6,7 +6,7 @@ the book [Inference Engineering by Philip Kiely](https://www.baseten.co/inferenc
 folder with working code and a README that explains what I built, what I
 learned and what the numbers showed.
 
-**Progress: day 22 of 45.** More to come.
+**Progress: day 27 of 45.** More to come.
 
 ## What this is about
 
@@ -72,6 +72,16 @@ time, mostly by measuring it.
 | [21](day-21) | Frameworks | Eager mode vs `torch.compile` on a transformer block |
 | [22](day-22) | Review project | An OpenAI-style `/v1/completions` server with SSE streaming and **continuous batching** |
 
+### Part 6: inference engines (days 23–27)
+
+| Day | Topic | What I built |
+|---|---|---|
+| [23](day-23) | vLLM | Qwen2.5-0.5B with vLLM: offline batch generation and the OpenAI-compatible server (Colab) |
+| [24](day-24) | Continuous batching, revisited | A scheduler simulator: continuous batching gives about 4x the throughput of static |
+| [25](day-25) | PagedAttention | A block-based KV allocator: 89% of memory holds tokens vs 36% for contiguous reservations |
+| [26](day-26) | NVIDIA Dynamo | A KV-aware router: prefix hits plus load balance, 3x better p99 TTFT than round robin |
+| [27](day-27) | Benchmarking | An async load tester that sweeps concurrency and reports TTFT, ITL and throughput |
+
 ## Highlights
 
 - **My own GPT, from scratch:** embeddings, attention, MLP blocks and the
@@ -85,6 +95,10 @@ time, mostly by measuring it.
 - **A streaming server with continuous batching (day 22):** users join and leave
   the batch at every step. It gave about 7x the total throughput at 30 users,
   and the README records every design decision I made.
+- **How engines like vLLM win (days 23–27):** continuous batching gave 4x the
+  throughput of static batching, paged KV memory fit a 2.5x bigger batch, and
+  a KV-aware router cut p99 TTFT 3x by sending each chat back to the replica
+  that already has its prefix cached.
 
 ## Running the code
 
@@ -95,14 +109,14 @@ pip3 install torch transformers matplotlib numpy fastapi uvicorn
 python3 day-1/token_timer.py
 ```
 
-Days 16, 20 and 21 are meant for a free **Google Colab T4 GPU**. Day 19 needs
+Days 16, 20, 21, 23 and 27 are meant for a free **Google Colab T4 GPU**. Day 19 needs
 [Ollama](https://ollama.com). Each day's README has its own instructions. Some
 days import earlier ones (10 uses 9, 11 and 13 use 10), so keep the folder
 names as they are.
 
 ## What's next
 
-Days 23–45 continue through the rest of the book: inference engines (vLLM,
-SGLang, TensorRT-LLM), model optimization (quantization, speculative decoding,
-caching), multi-GPU parallelism, and running inference in production. Each day
+Days 28–45 continue through the rest of the book: model optimization
+(quantization, speculative decoding, caching), multi-GPU parallelism, and
+running inference in production. Each day
 will get its own folder here, like the ones above.

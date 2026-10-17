@@ -38,8 +38,8 @@ On Colab, with the day 23 server running:
 Against day 22's server on the Mac:
 
 ```
-python3 day-22/server.py
-python3 day-27/load_tester.py --url http://localhost:8080/v1 --model distilgpt2 --concurrency 1,4,8 --requests 8 --rounds 1 --max-tokens 32
+python3 days/day-22/server.py
+python3 days/day-27/load_tester.py --url http://localhost:8080/v1 --model distilgpt2 --concurrency 1,4,8 --requests 8 --rounds 1 --max-tokens 32
 ```
 
 It needs `httpx` (already on Colab and on this Mac) and, for the graphs,

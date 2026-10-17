@@ -29,7 +29,7 @@ all three setups on an 8,192-slot pool. That is 288 MB of KV cache for
 distilgpt2, at 36 KB per token.
 
 ```
-python3 day-25/paged_kv_allocator.py
+python3 days/day-25/paged_kv_allocator.py
 ```
 
 ## What we learned

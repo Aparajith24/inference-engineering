@@ -31,7 +31,7 @@ The cost model is based on day 22's Mac GPU measurements:
 It prints a table and saves `batching_sim.png`.
 
 ```
-python3 day-24/batching_sim.py
+python3 days/day-24/batching_sim.py
 ```
 
 It takes under a second.

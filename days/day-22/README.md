@@ -47,7 +47,7 @@ The 9 commits follow the build order:
 ## How to run it
 
 ```
-python3 day-22/server.py
+python3 days/day-22/server.py
 ```
 
 The first start downloads nothing new (distilgpt2 is cached from day 1). Then,

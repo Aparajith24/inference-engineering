@@ -29,7 +29,7 @@ The same requests go through five routers:
 | **kv-aware** | the lowest **estimated TTFT** = queue wait + prefill of the uncached part |
 
 ```
-python3 day-26/kv_aware_router.py
+python3 days/day-26/kv_aware_router.py
 ```
 
 It takes under a second.

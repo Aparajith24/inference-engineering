@@ -6,7 +6,7 @@ the book [Inference Engineering by Philip Kiely](https://www.baseten.co/inferenc
 folder with working code and a README that explains what I built, what I
 learned and what the numbers showed.
 
-**Progress: day 27 of 45.** More to come.
+**Progress: day 29 of 45.** More to come.
 
 ## What this is about
 
@@ -82,6 +82,13 @@ time, mostly by measuring it.
 | [26](days/day-26) | NVIDIA Dynamo | A KV-aware router: prefix hits plus load balance, 3x better p99 TTFT than round robin |
 | [27](days/day-27) | Benchmarking | An async load tester that sweeps concurrency and reports TTFT, ITL and throughput |
 
+### Part 7: techniques (days 28–29)
+
+| Day | Topic | What I built |
+|---|---|---|
+| [28](days/day-28) | Quantization: int8 | Per-tensor vs per-channel int8 on all 24 linear layers of distilgpt2: output error 5.68% → 0.91% |
+| [29](days/day-29) | Quantization: int4 | 4-bit group quantization: perplexity for fp16, int8 and int4, and real int4 kernels 3.4–3.8x faster at batch 1 |
+
 ## Highlights
 
 - **My own GPT, from scratch:** embeddings, attention, MLP blocks and the
@@ -99,6 +106,10 @@ time, mostly by measuring it.
   throughput of static batching, paged KV memory fit a 2.5x bigger batch, and
   a KV-aware router cut p99 TTFT 3x by sending each chat back to the replica
   that already has its prefix cached.
+- **Quantization (days 28–29):** per-channel int8 is lossless for distilgpt2.
+  int4 needs small groups: one scale per row sent perplexity from 45 to 17,489,
+  groups of 32 kept it within 0.3%. At batch 1, int4 kernels ran 3.4–3.8x
+  faster than fp16, but slower at batch 16, because they save bytes, not compute.
 
 ## Running the code
 
@@ -116,7 +127,7 @@ folders together in `days/` with their names as they are.
 
 ## What's next
 
-Days 28–45 continue through the rest of the book: model optimization
-(quantization, speculative decoding, caching), multi-GPU parallelism, and
+Days 30–45 continue through the rest of the book: more model optimization
+(speculative decoding, caching, disaggregation), multi-GPU parallelism, and
 running inference in production. Each day
 will get its own folder here, like the ones above.

@@ -6,7 +6,7 @@ the book [Inference Engineering by Philip Kiely](https://www.baseten.co/inferenc
 folder with working code and a README that explains what I built, what I
 learned and what the numbers showed.
 
-**Progress: day 30 of 45.** More to come.
+**Progress: day 31 of 45.** More to come.
 
 ## What this is about
 
@@ -82,13 +82,14 @@ time, mostly by measuring it.
 | [26](days/day-26) | NVIDIA Dynamo | A KV-aware router: prefix hits plus load balance, 3x better p99 TTFT than round robin |
 | [27](days/day-27) | Benchmarking | An async load tester that sweeps concurrency and reports TTFT, ITL and throughput |
 
-### Part 7: techniques (days 28–30)
+### Part 7: techniques (days 28–31)
 
 | Day | Topic | What I built |
 |---|---|---|
 | [28](days/day-28) | Quantization: int8 | Per-tensor vs per-channel int8 on all 24 linear layers of distilgpt2: output error 5.68% → 0.91% |
 | [29](days/day-29) | Quantization: int4 | 4-bit group quantization: perplexity for fp16, int8 and int4, and real int4 kernels 3.4–3.8x faster at batch 1 |
 | [30](days/day-30) | Speculative decoding | gpt2 drafts, gpt2-medium checks: identical output, 1.39x faster at temperature 0, slower at temperature 1 |
+| [31](days/day31-prompt-lookup) | Prompt-lookup decoding | No draft model: a 2-gram suffix proposes k tokens. Acceptance 83% → 61% for k=1 → 8; up to 3.25x on copy-heavy text |
 
 ## Highlights
 
@@ -110,6 +111,9 @@ time, mostly by measuring it.
 - **Speculative decoding (day 30):** checking 9 drafted tokens cost only 35%
   more than making 1. Greedy output stayed identical and got 1.39x faster;
   at temperature 1, acceptance fell to 30–71% and long drafts made it slower.
+- **Prompt lookup (day 31):** with no draft model at all, an n-gram suffix
+  drafted up to 8 tokens per pass. Acceptance fell from 83% at k=1 to 61% at
+  k=8, but copy-heavy text still ran 3.25x faster with identical output.
 - **Quantization (days 28–29):** per-channel int8 is lossless for distilgpt2.
   int4 needs small groups: one scale per row sent perplexity from 45 to 17,489,
   groups of 32 kept it within 0.3%. At batch 1, int4 kernels ran 3.4–3.8x
@@ -125,13 +129,14 @@ python3 days/day-1/token_timer.py
 ```
 
 Days 16, 20, 21, 23 and 27 are meant for a free **Google Colab T4 GPU**. Day 19 needs
-[Ollama](https://ollama.com). Each day's README has its own instructions. Some
+[Ollama](https://ollama.com). Days 30 and 31 download `gpt2` and `gpt2-medium`
+(the larger file is about 1.5 GB). Each day's README has its own instructions. Some
 days import earlier ones (10 uses 9, 11 and 13 use 10), so keep all the day
 folders together in `days/` with their names as they are.
 
 ## What's next
 
-Days 31–45 continue through the rest of the book: more model optimization
+Days 32–45 continue through the rest of the book: more model optimization
 (caching, disaggregation), multi-GPU parallelism, and
 running inference in production. Each day
 will get its own folder here, like the ones above.

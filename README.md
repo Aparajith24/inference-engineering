@@ -6,7 +6,7 @@ the book [Inference Engineering by Philip Kiely](https://www.baseten.co/inferenc
 folder with working code and a README that explains what I built, what I
 learned and what the numbers showed.
 
-**Progress: day 31 of 45.** More to come.
+**Progress: day 32 of 45.** More to come.
 
 ## What this is about
 
@@ -82,7 +82,7 @@ time, mostly by measuring it.
 | [26](days/day-26) | NVIDIA Dynamo | A KV-aware router: prefix hits plus load balance, 3x better p99 TTFT than round robin |
 | [27](days/day-27) | Benchmarking | An async load tester that sweeps concurrency and reports TTFT, ITL and throughput |
 
-### Part 7: techniques (days 28–31)
+### Part 7: techniques (days 28–32)
 
 | Day | Topic | What I built |
 |---|---|---|
@@ -90,6 +90,7 @@ time, mostly by measuring it.
 | [29](days/day-29) | Quantization: int4 | 4-bit group quantization: perplexity for fp16, int8 and int4, and real int4 kernels 3.4–3.8x faster at batch 1 |
 | [30](days/day-30) | Speculative decoding | gpt2 drafts, gpt2-medium checks: identical output, 1.39x faster at temperature 0, slower at temperature 1 |
 | [31](days/day31-prompt-lookup) | Prompt-lookup decoding | No draft model: a 2-gram suffix proposes k tokens. Acceptance 83% → 61% for k=1 → 8; up to 3.25x on copy-heavy text |
+| [32](days/day32-prefix-cache) | Prefix caching | A radix tree of 16-token blocks: 71% of prompt tokens reused, zero stranded blocks, and the 0.8-point gap to a flat block dict |
 
 ## Highlights
 
@@ -114,6 +115,11 @@ time, mostly by measuring it.
 - **Prompt lookup (day 31):** with no draft model at all, an n-gram suffix
   drafted up to 8 tokens per pass. Acceptance fell from 83% at k=1 to 61% at
   k=8, but copy-heavy text still ran 3.25x faster with identical output.
+- **Prefix caching (day 32):** a radix tree of KV blocks cut prefill by 71%
+  (452k prompt tokens → 129k), and moving one timestamp from the front of a
+  system prompt to the back took its hit rate from 0% to 91.5%. Against a flat
+  block dict the tree gained only 0.8 points of hit rate, but it stranded no
+  blocks, and the flat one lost 11 points the moment a lookup forgot to refresh.
 - **Quantization (days 28–29):** per-channel int8 is lossless for distilgpt2.
   int4 needs small groups: one scale per row sent perplexity from 45 to 17,489,
   groups of 32 kept it within 0.3%. At batch 1, int4 kernels ran 3.4–3.8x
@@ -136,7 +142,7 @@ folders together in `days/` with their names as they are.
 
 ## What's next
 
-Days 32–45 continue through the rest of the book: more model optimization
-(caching, disaggregation), multi-GPU parallelism, and
+Days 33–45 continue through the rest of the book: more model optimization
+(disaggregation), multi-GPU parallelism, and
 running inference in production. Each day
 will get its own folder here, like the ones above.

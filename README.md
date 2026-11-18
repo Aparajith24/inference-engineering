@@ -6,7 +6,7 @@ the book [Inference Engineering by Philip Kiely](https://www.baseten.co/inferenc
 folder with working code and a README that explains what I built, what I
 learned and what the numbers showed.
 
-**Progress: day 32 of 45.** More to come.
+**Progress: day 34 of 45.** More to come.
 
 ## What this is about
 
@@ -82,7 +82,7 @@ time, mostly by measuring it.
 | [26](days/day-26) | NVIDIA Dynamo | A KV-aware router: prefix hits plus load balance, 3x better p99 TTFT than round robin |
 | [27](days/day-27) | Benchmarking | An async load tester that sweeps concurrency and reports TTFT, ITL and throughput |
 
-### Part 7: techniques (days 28–32)
+### Part 7: techniques (days 28–34)
 
 | Day | Topic | What I built |
 |---|---|---|
@@ -91,6 +91,8 @@ time, mostly by measuring it.
 | [30](days/day-30) | Speculative decoding | gpt2 drafts, gpt2-medium checks: identical output, 1.39x faster at temperature 0, slower at temperature 1 |
 | [31](days/day31-prompt-lookup) | Prompt-lookup decoding | No draft model: a 2-gram suffix proposes k tokens. Acceptance 83% → 61% for k=1 → 8; up to 3.25x on copy-heavy text |
 | [32](days/day32-prefix-cache) | Prefix caching | A radix tree of 16-token blocks: 71% of prompt tokens reused, zero stranded blocks, and the 0.8-point gap to a flat block dict |
+| [33](days/day33-tensor-parallel) | Tensor parallelism | A column- then row-parallel MLP on 2 gloo processes: identical output to 6.8e-6, 4.5x fewer bytes than the naive split, and the all-reduce costs 5 us of latency before it costs bytes |
+| [34](days/day34-parallelism-planner) | TP, PP, EP planning | A planner for 4 models on B200/H200: 4 GPUs hold DeepSeek's weights and OOM on the KV cache, TP and PP divide memory identically but PP divides no time, and 8→64 GPUs is 8x throughput at flat latency |
 
 ## Highlights
 
@@ -120,6 +122,12 @@ time, mostly by measuring it.
   system prompt to the back took its hit rate from 0% to 91.5%. Against a flat
   block dict the tree gained only 0.8 points of hit rate, but it stranded no
   blocks, and the flat one lost 11 points the moment a lookup forgot to refresh.
+- **Model parallelism (days 33–34):** one all-reduce per layer is the whole
+  trick of tensor parallelism, and its cost is a 5 us constant before it is a
+  byte count: at batch 1 a layer needs 20M params per rank to earn it back. The
+  planner reproduces figure 5.11 to the gigabyte (4 B200s: 170.5 GB of weights
+  against a 172.8 GB budget, then the KV cache OOMs) and shows that TP and PP
+  divide memory identically while only TP divides time.
 - **Quantization (days 28–29):** per-channel int8 is lossless for distilgpt2.
   int4 needs small groups: one scale per row sent perplexity from 45 to 17,489,
   groups of 32 kept it within 0.3%. At batch 1, int4 kernels ran 3.4–3.8x
@@ -136,13 +144,13 @@ python3 days/day-1/token_timer.py
 
 Days 16, 20, 21, 23 and 27 are meant for a free **Google Colab T4 GPU**. Day 19 needs
 [Ollama](https://ollama.com). Days 30 and 31 download `gpt2` and `gpt2-medium`
-(the larger file is about 1.5 GB). Each day's README has its own instructions. Some
+(the larger file is about 1.5 GB). Day 33 runs 2 CPU processes, day 34 needs
+nothing but Python. Each day's README has its own instructions. Some
 days import earlier ones (10 uses 9, 11 and 13 use 10), so keep all the day
 folders together in `days/` with their names as they are.
 
 ## What's next
 
-Days 33–45 continue through the rest of the book: more model optimization
-(disaggregation), multi-GPU parallelism, and
-running inference in production. Each day
-will get its own folder here, like the ones above.
+Days 35–45 continue through the rest of the book: disaggregated prefill and
+decode, running inference in production, and the rest of the techniques
+chapters. Each day gets its own folder here, like the ones above.

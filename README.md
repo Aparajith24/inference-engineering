@@ -6,7 +6,7 @@ the book [Inference Engineering by Philip Kiely](https://www.baseten.co/inferenc
 folder with working code and a README that explains what I built, what I
 learned and what the numbers showed.
 
-**Progress: day 34 of 45.** More to come.
+**Progress: day 35 of 45.** More to come.
 
 ## What this is about
 
@@ -82,7 +82,7 @@ time, mostly by measuring it.
 | [26](days/day-26) | NVIDIA Dynamo | A KV-aware router: prefix hits plus load balance, 3x better p99 TTFT than round robin |
 | [27](days/day-27) | Benchmarking | An async load tester that sweeps concurrency and reports TTFT, ITL and throughput |
 
-### Part 7: techniques (days 28–34)
+### Part 7: techniques (days 28–35)
 
 | Day | Topic | What I built |
 |---|---|---|
@@ -93,6 +93,7 @@ time, mostly by measuring it.
 | [32](days/day32-prefix-cache) | Prefix caching | A radix tree of 16-token blocks: 71% of prompt tokens reused, zero stranded blocks, and the 0.8-point gap to a flat block dict |
 | [33](days/day33-tensor-parallel) | Tensor parallelism | A column- then row-parallel MLP on 2 gloo processes: identical output to 6.8e-6, 4.5x fewer bytes than the naive split, and the all-reduce costs 5 us of latency before it costs bytes |
 | [34](days/day34-parallelism-planner) | TP, PP, EP planning | A planner for 4 models on B200/H200: 4 GPUs hold DeepSeek's weights and OOM on the KV cache, TP and PP divide memory identically but PP divides no time, and 8→64 GPUs is 8x throughput at flat latency |
+| [35](days/day35-disaggregation) | Disaggregation | A prefill/decode simulator in goodput: unchunked colocation gets 1% of requests inside a 30 ms ITL, one chunk size gets 97%, and xPyD only beats tuned colocation when the phases stop hiding behind each other |
 
 ## Highlights
 
@@ -122,6 +123,12 @@ time, mostly by measuring it.
   system prompt to the back took its hit rate from 0% to 91.5%. Against a flat
   block dict the tree gained only 0.8 points of hit rate, but it stranded no
   blocks, and the flat one lost 11 points the moment a lookup forgot to refresh.
+- **Disaggregation (day 35):** the same four GPUs score 1%, 97% or 53% goodput
+  depending only on how prefill is scheduled against decode. Unchunked, a 5k
+  prompt lands as a 517 ms stall between tokens. Chunked at 256 tokens the
+  prefill hides inside the decode step and 97% of requests stay inside both
+  targets — as good as the best xPyD split, until the overlap between the two
+  phases degrades and the split wins by 50 points.
 - **Model parallelism (days 33–34):** one all-reduce per layer is the whole
   trick of tensor parallelism, and its cost is a 5 us constant before it is a
   byte count: at batch 1 a layer needs 20M params per rank to earn it back. The
@@ -151,6 +158,6 @@ folders together in `days/` with their names as they are.
 
 ## What's next
 
-Days 35–45 continue through the rest of the book: disaggregated prefill and
-decode, running inference in production, and the rest of the techniques
-chapters. Each day gets its own folder here, like the ones above.
+Days 36–45 continue through the rest of the book: running inference in
+production, the rest of the techniques chapters, and the closing review. Each day
+gets its own folder here, like the ones above.
